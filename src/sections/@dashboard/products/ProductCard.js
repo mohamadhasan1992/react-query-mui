@@ -24,16 +24,28 @@ ShopProductCard.propTypes = {
   product: PropTypes.object,
 };
 
+
+const getColor = (brand) => {
+  if(brand.length <= 5 ){
+    return 'error'
+  }else if(brand.length >=10){
+    return 'info'
+  }else{
+    return 'warning'
+  }
+}
+
+
 export default function ShopProductCard({ product, productId }) {
-  const { name, cover, mass, eye_color, gender, height } = product;
+  const { title, thumbnail, price, category, brand, discountPercentage } = product;
 
   return (
     <Card>
       <Box sx={{ pt: '100%', position: 'relative' }}>
-        {gender && (
+        {brand && (
           <Label
             variant="filled"
-            color={(gender === 'male' && 'error') || 'info'}
+            color={getColor(brand)}
             sx={{
               zIndex: 9,
               top: 16,
@@ -42,16 +54,16 @@ export default function ShopProductCard({ product, productId }) {
               textTransform: 'uppercase',
             }}
           >
-            {gender}
+            {brand}
           </Label>
         )}
-        <StyledProductImg alt={name} src={`/assets/images/products/product_${productId}.jpg`} />
+        <StyledProductImg alt={title} src={thumbnail} />
       </Box>
 
       <Stack spacing={2} sx={{ p: 3 }}>
         <Link color="inherit" underline="hover">
           <Typography variant="subtitle2" noWrap>
-            {name}
+            {title}
           </Typography>
         </Link>
 
@@ -66,10 +78,10 @@ export default function ShopProductCard({ product, productId }) {
                 textDecoration: 'line-through',
               }}
             >
-              {height && fCurrency(height)}
+              {discountPercentage && fCurrency(discountPercentage)}
             </Typography>
             &nbsp;
-            {fCurrency(mass)}
+            {fCurrency(price)}
           </Typography>
         </Stack>
       </Stack>

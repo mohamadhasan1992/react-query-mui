@@ -12,15 +12,15 @@ ProductList.propTypes = {
   products: PropTypes.array.isRequired,
 };
 
-export default function ProductList({ data, loadMore, hasMore, isLoading, isError, error }) {
+export default function ProductList({ products, loadMore, hasMore, isLoading, isError, error }) {
   return (
     <>
     {isLoading && <Spinner />}
     {isError && <Error detail={error} />}
     <InfiniteScroll loadMore={loadMore} hasMore={hasMore}>
       <Grid container spacing={3}>
-        {data?.pages.map(eachPageData => {
-          return eachPageData.results.map((product, index) => (
+        {products?.pages.map(eachPageData => {
+          return eachPageData?.products.map((product, index) => (
             <Grid key={index} item xs={12} sm={6} md={3}>
               <ShopProductCard product={product} productId={index + 1} />
             </Grid>

@@ -41,7 +41,7 @@ export default function DashboardAppPage() {
           <Grid item xs={12} md={6} lg={4}>
             <AppOrderTimeline
               title="Key Features"
-              list={[...Array(7)].map((_, index) => ({
+              list={[...Array(9)].map((_, index) => ({
                 id: faker.datatype.uuid(),
                 title: [
                   'Fetching data',
@@ -50,7 +50,9 @@ export default function DashboardAppPage() {
                   'Prefetching',
                   'Mutation',
                   'Infinite Scroll',
-                  'Setup, Centralization, Custom Hooks'
+                  'Setup, Centralization, Custom Hooks',
+                  'Integrating Auth',
+                  'Dependent queries',
                 ][index],
                 type: `order${index + 1}`,
                 time: faker.date.past(),

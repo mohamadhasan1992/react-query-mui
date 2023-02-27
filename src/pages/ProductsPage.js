@@ -9,7 +9,7 @@ import PRODUCTS from '../_mock/products';
 import { useInfiniteQuery } from 'react-query';
 
 // ----------------------------------------------------------------------
-const initialUrl = 'https://swapi.dev/api/people/';
+const initialUrl = 'https://dummyjson.com/products?limit=10';
 const fetchUrl = async(url) => {
   const response = await fetch(url);
   return response.json();
@@ -20,13 +20,23 @@ export default function ProductsPage() {
   //  count: number
   //  next: url
   // previous: null || url
-  // results: People[]
+  // products: Product[]
+  // "total": 100,
+  // "skip": 0,
+  // "limit": 30
   const { data, fetchNextPage, hasNextPage, isLoading, isError, error,isFetching } = useInfiniteQuery(
-    'sw-people',
+    'sw-products',
     ({pageParam = initialUrl}) => fetchUrl(pageParam),
     {
       // getNextPageParam: (lastPage) => `initialPage?page={lastPage.page + 1}&limit={lastPage.limit}` // add a condition to reach end of the list
-      getNextPageParam: (lastPage) => lastPage.next || undefined
+      // getNextPageParam: (lastPage) => lastPage.next || undefined
+      getNextPageParam: (lastPage) => {
+        if((lastPage.skip + lastPage.limit) >= lastPage.total){
+          return undefined
+        }else{
+          return `${initialUrl}&skip=${lastPage.limit + lastPage.skip}`
+        }
+      }
     }
   );
   return (
@@ -40,7 +50,7 @@ export default function ProductsPage() {
           Products
         </Typography>
         <ProductList 
-          data={data} 
+          products={data} 
           loadMore={fetchNextPage} 
           hasMore={hasNextPage} 
           isLoading={isFetching}
