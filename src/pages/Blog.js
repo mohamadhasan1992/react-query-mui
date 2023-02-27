@@ -12,47 +12,12 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
-import TableSortLabel from '@mui/material/TableSortLabel';
-import Toolbar from '@mui/material/Toolbar';
-import Typography from '@mui/material/Typography';
 import Paper from '@mui/material/Paper';
 import Checkbox from '@mui/material/Checkbox';
-import IconButton from '@mui/material/IconButton';
-import Tooltip from '@mui/material/Tooltip';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Switch from '@mui/material/Switch';
-import DeleteIcon from '@mui/icons-material/Delete';
-import FilterListIcon from '@mui/icons-material/FilterList';
-import { visuallyHidden } from '@mui/utils';
 import BlogDetail from 'src/components/blog/BlogDetail';
-import { useEffect } from 'react';
-import { useState } from 'react';
+import ViewListIcon from '@mui/icons-material/ViewList';
+import { ToggleButton } from '@mui/material';
 
-function createData(name, calories, fat, carbs, protein) {
-  return {
-    name,
-    calories,
-    fat,
-    carbs,
-    protein,
-  };
-}
-
-const rows = [
-  createData('Cupcake', 305, 3.7, 67, 4.3),
-  createData('Donut', 452, 25.0, 51, 4.9),
-  createData('Eclair', 262, 16.0, 24, 6.0),
-  createData('Frozen yoghurt', 159, 6.0, 24, 4.0),
-  createData('Gingerbread', 356, 16.0, 49, 3.9),
-  createData('Honeycomb', 408, 3.2, 87, 6.5),
-  createData('Ice cream sandwich', 237, 9.0, 37, 4.3),
-  createData('Jelly Bean', 375, 0.0, 94, 0.0),
-  createData('KitKat', 518, 26.0, 65, 7.0),
-  createData('Lollipop', 392, 0.2, 98, 0.0),
-  createData('Marshmallow', 318, 0, 81, 2.0),
-  createData('Nougat', 360, 19.0, 9, 37.0),
-  createData('Oreo', 437, 18.0, 63, 4.0),
-];
 
 
 
@@ -80,12 +45,16 @@ const headCells = [
 export default function Blog() {
   const [open, setOpen] = React.useState(false);
   const [selected, setSelected] = React.useState(0);
-  const [page, setPage] = React.useState(0);
+  const [page, setPage] = React.useState(1);
   const [dense, setDense] = React.useState(false);
-  const [rowsPerPage, setRowsPerPage] = React.useState(5);
-  const {data, isError, error, isLoading} = useQuery('posts', fetchPosts, {
-    staleTime: 2000
-  })
+  const [rowsPerPage, setRowsPerPage] = React.useState(10);
+
+
+  const {data, isError, error, isLoading} = useQuery(
+    ['posts', page, rowsPerPage], 
+    () => fetchPosts(page, rowsPerPage), {
+      staleTime: 2000
+    })
   if(isLoading) return <Spinner />
   if(isError) return <Error detail={error.toString()} />
 
@@ -98,12 +67,12 @@ export default function Blog() {
   };
 
   const handleChangePage = (event, newPage) => {
-    setPage(newPage);
+    setPage(newPage + 1);
   };
 
   const handleChangeRowsPerPage = (event) => {
     setRowsPerPage(parseInt(event.target.value, 10));
-    setPage(0);
+    setPage(1);
   };
 
  
@@ -111,8 +80,8 @@ export default function Blog() {
   const isSelected = (id) => selected === id;
 
   // Avoid a layout jump when reaching the last page with empty rows.
-  const emptyRows =
-    page > 0 ? Math.max(0, (1 + page) * rowsPerPage - data.length) : 0;
+  // const emptyRows =
+  //   Math.max(0, (1 + page) * rowsPerPage - data.length);
 
     
 
@@ -146,22 +115,12 @@ export default function Blog() {
                   return (
                     <TableRow
                       hover
-                      onClick={(event) => handleClick(event, eachData.id)}
                       role="checkbox"
                       aria-checked={isSelected(eachData.id)}
                       tabIndex={-1}
                       key={eachData.id}
                       selected={isSelected(eachData.id)}
                     >
-                      <TableCell padding="checkbox">
-                        <Checkbox
-                          color="primary"
-                          checked={isSelected(eachData.id)}
-                          inputProps={{
-                            'aria-labelledby': eachData.id,
-                          }}
-                        />
-                      </TableCell>
                       <TableCell
                         component="th"
                         id={eachData.id}
@@ -170,12 +129,21 @@ export default function Blog() {
                       >
                         {eachData.id}
                       </TableCell>
+                      <TableCell padding="checkbox">
+                          <ToggleButton 
+                            value="list" 
+                            aria-label="list"
+                            onClick={(event) => handleClick(event, eachData.id)}
+                            >
+                            <ViewListIcon />
+                          </ToggleButton>
+                      </TableCell>
                       <TableCell align="left">{eachData.title}</TableCell>
                       <TableCell align="left">{eachData.body}</TableCell>
                     </TableRow>
                   );
                 })}
-              {emptyRows > 0 && (
+              {/* {emptyRows > 0 && (
                 <TableRow
                   style={{
                     height: (dense ? 33 : 53) * emptyRows,
@@ -183,16 +151,16 @@ export default function Blog() {
                 >
                   <TableCell colSpan={6} />
                 </TableRow>
-              )}
+              )} */}
             </TableBody>
           </Table>
         </TableContainer>
         <TablePagination
           rowsPerPageOptions={[5, 10, 25]}
           component="div"
-          count={data.length}
+          count={data.length + 100}
           rowsPerPage={rowsPerPage}
-          page={page}
+          page={page - 1}
           onPageChange={handleChangePage}
           onRowsPerPageChange={handleChangeRowsPerPage}
         />

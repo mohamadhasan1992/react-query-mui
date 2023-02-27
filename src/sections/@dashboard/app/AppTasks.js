@@ -28,7 +28,7 @@ AppTasks.propTypes = {
 export default function AppTasks({ title, subheader, list, ...other }) {
   const { control } = useForm({
     defaultValues: {
-      taskCompleted: [],
+      taskCompleted: ["1","2","3","4",],
     },
   });
 
@@ -109,8 +109,8 @@ function TaskItem({ task, checked, onChange }) {
         px: 2,
         py: 0.75,
         ...(checked && {
-          color: 'text.disabled',
-          textDecoration: 'line-through',
+          // color: 'text.disabled',
+          // textDecoration: 'line-through',
         }),
       }}
     >

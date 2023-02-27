@@ -58,11 +58,12 @@ export default function DashboardAppPage() {
 
           <Grid item xs={12} md={6} lg={8}>
             <AppTasks
-              title="Details"
+              title="Information"
               list={[
-                { id: '1', label: 'React query using REST API' },
-                { id: '2', label: 'fetchs are all client side' },
-                { id: '3', label: 'htps://jsonplaceholder.typicode.com' },
+                { id: '1', label: 'implementing React query' },
+                { id: '2', label: 'fetchs are all CSR' },
+                { id: '3', label: 'data source htps://jsonplaceholder.typicode.com' },
+                { id: '4', label: 'UI is a mui free template' },
               ]}
             />
           </Grid>
