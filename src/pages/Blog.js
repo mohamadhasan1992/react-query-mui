@@ -1,9 +1,9 @@
 import * as React from 'react';
-import { useQuery } from 'react-query';
+import { useMutation, useQuery, useQueryClient } from 'react-query';
 import Spinner from '../components/loading/spinner';
 import Error from '../components/errror/error';
 
-import {fetchPosts} from '../utils/fetch-posts';
+import {deletePost, fetchPosts} from '../utils/fetch-posts';
 import Box from '@mui/material/Box';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -13,10 +13,11 @@ import TableHead from '@mui/material/TableHead';
 import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
-import Checkbox from '@mui/material/Checkbox';
 import BlogDetail from 'src/components/blog/BlogDetail';
 import ViewListIcon from '@mui/icons-material/ViewList';
+import DeleteForeverOutlinedIcon from '@mui/icons-material/DeleteForeverOutlined';
 import { ToggleButton } from '@mui/material';
+import Success from 'src/components/errror/Success';
 
 
 
@@ -39,6 +40,12 @@ const headCells = [
     numeric: true,
     disablePadding: false,
     label: 'Body',
+  },
+  {
+    id: '',
+    numeric: true,
+    disablePadding: false,
+    label: '',
   }
 ];
 
@@ -49,7 +56,23 @@ export default function Blog() {
   const [dense, setDense] = React.useState(false);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
 
+  // DELETION USING USEMUTATION
+  const deleteMutation = useMutation((postId) => deletePost(postId) )
 
+  // PREFETCHING
+  const queryClient = useQueryClient();
+  React.useEffect(() => {
+    const nextPage = page + 1;
+    queryClient.prefetchQuery(
+      ['posts', nextPage, rowsPerPage],
+      () => fetchPosts(nextPage, rowsPerPage), {
+        staleTime: 2000,
+        keepPreviouseData: true
+      }      
+      )
+  },[page, rowsPerPage, queryClient])
+  
+  /// FETCHING DATA
   const {data, isError, error, isLoading} = useQuery(
     ['posts', page, rowsPerPage], 
     () => fetchPosts(page, rowsPerPage), {
@@ -65,6 +88,9 @@ export default function Blog() {
     setOpen(true)
     setSelected(id);
   };
+  const handleDelete = (event, id) => {
+    deleteMutation.mutate(id)
+  }
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage + 1);
@@ -78,17 +104,13 @@ export default function Blog() {
  
 
   const isSelected = (id) => selected === id;
-
-  // Avoid a layout jump when reaching the last page with empty rows.
-  // const emptyRows =
-  //   Math.max(0, (1 + page) * rowsPerPage - data.length);
-
-    
-
    
-  return (
+  return ( 
     <>
       {open && <BlogDetail open={open} setOpen={setOpen} postId={selected} />}
+      {deleteMutation.isError && <Error detail={'Error deleting the post'} />}
+      {deleteMutation.isLoading && <Spinner />}
+      {deleteMutation.isSuccess && <Success detail={'post successfully deleted!'} />}
     <Box sx={{ width: '100%' }}>
       <Paper sx={{ width: '100%', mb: 2 }}>
         <TableContainer>
@@ -121,44 +143,45 @@ export default function Blog() {
                       key={eachData.id}
                       selected={isSelected(eachData.id)}
                     >
-                      <TableCell
+                      {/* <TableCell
                         component="th"
                         id={eachData.id}
                         scope="row"
                         padding="none"
                       >
                         {eachData.id}
-                      </TableCell>
+                      </TableCell> */}
                       <TableCell padding="checkbox">
-                          <ToggleButton 
-                            value="list" 
-                            aria-label="list"
-                            onClick={(event) => handleClick(event, eachData.id)}
-                            >
-                            <ViewListIcon />
-                          </ToggleButton>
+                        <ToggleButton 
+                          value="list" 
+                          aria-label="list"
+                          onClick={(event) => handleClick(event, eachData.id)}
+                          >
+                          <ViewListIcon color='info' />
+                        </ToggleButton>
                       </TableCell>
                       <TableCell align="left">{eachData.title}</TableCell>
                       <TableCell align="left">{eachData.body}</TableCell>
+                      <TableCell align="left">
+                        <ToggleButton 
+                          value="list" 
+                          aria-label="list"
+                          onClick={(event) => handleDelete(event, eachData.id)}
+                          >
+                          <DeleteForeverOutlinedIcon color='error' />
+                        </ToggleButton>
+                      </TableCell>
                     </TableRow>
                   );
                 })}
-              {/* {emptyRows > 0 && (
-                <TableRow
-                  style={{
-                    height: (dense ? 33 : 53) * emptyRows,
-                  }}
-                >
-                  <TableCell colSpan={6} />
-                </TableRow>
-              )} */}
+              
             </TableBody>
           </Table>
         </TableContainer>
         <TablePagination
           rowsPerPageOptions={[5, 10, 25]}
           component="div"
-          count={data.length + 100}
+          count={200}
           rowsPerPage={rowsPerPage}
           page={page - 1}
           onPageChange={handleChangePage}

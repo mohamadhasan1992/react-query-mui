@@ -9,7 +9,7 @@ import Typography from '@mui/material/Typography';
 
 export default function CommentList({comments}) {
   return (
-    <List sx={{ width: '100%', overflow: 'auto', maxWidth: 600, maxHeight: "80vh", bgcolor: 'background.paper' }}>
+    <List sx={{ width: '100%', maxWidth: 600, maxHeight: "80vh", bgcolor: 'background.paper' }}>
         {comments?.map(item => {
             return(
                 <>

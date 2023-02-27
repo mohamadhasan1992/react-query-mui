@@ -1,6 +1,5 @@
 import * as React from 'react';
 import Box from '@mui/material/Box';
-import Typography from '@mui/material/Typography';
 import Modal from '@mui/material/Modal';
 import { fetchComments} from '../../utils/fetch-posts';
 import { useQuery } from 'react-query';
@@ -17,10 +16,11 @@ const style = {
   border: '1px solid #000',
   boxShadow: 24,
   p: 4,
+  overflow: 'auto'
 };
 
 export default function BasicModal({open, setOpen, postId}) {
-    const {data} = useQuery(["comments", postId], () => fetchComments(postId))
+  const {data} = useQuery(["comments", postId], () => fetchComments(postId));
   const handleClose = () => setOpen(false);
 
   return (

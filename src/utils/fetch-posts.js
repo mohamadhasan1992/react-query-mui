@@ -14,5 +14,13 @@ const fetchComments = async(postId) => {
     return response.json()
 }
 
+const deletePost = async(postId) => {
+    const response = await fetch(
+        `https://jsonplaceholder.typicode.com/postId=${postId}`,
+        {method: 'DELETE'}
+    )
+    return response.json()
+}
 
-export {fetchPosts, fetchComments};
+
+export {fetchPosts, fetchComments, deletePost};

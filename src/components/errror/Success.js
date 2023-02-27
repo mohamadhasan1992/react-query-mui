@@ -4,7 +4,8 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 
-export default function Error({detail}) {
+export default function Success({detail}) {
+
 
   const [open, setOpen] = React.useState(true);
   // const handleClickOpen = () => {
@@ -18,7 +19,7 @@ export default function Error({detail}) {
   return (
     <div>
       <Dialog onClose={handleClose} open={open}>
-        <DialogTitle color="error">Oops!</DialogTitle>
+        <DialogTitle color="green">congratulation!</DialogTitle>
         <DialogContent>
           <DialogContentText>
             {detail}
