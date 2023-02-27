@@ -57,6 +57,8 @@ function OrderItem({ item, isLast }) {
             (type === 'order2' && 'success') ||
             (type === 'order3' && 'info') ||
             (type === 'order4' && 'warning') ||
+            (type === 'order5' && 'primary') ||
+            (type === 'order6' && 'success') ||
             'error'
           }
         />

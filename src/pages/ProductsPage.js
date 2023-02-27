@@ -3,23 +3,32 @@ import { useState } from 'react';
 // @mui
 import { Container, Stack, Typography } from '@mui/material';
 // components
-import { ProductSort, ProductList, ProductCartWidget, ProductFilterSidebar } from '../sections/@dashboard/products';
+import { ProductList } from '../sections/@dashboard/products';
 // mock
 import PRODUCTS from '../_mock/products';
+import { useInfiniteQuery } from 'react-query';
 
 // ----------------------------------------------------------------------
+const initialUrl = 'https://swapi.dev/api/people/';
+const fetchUrl = async(url) => {
+  const response = await fetch(url);
+  return response.json();
+}
 
 export default function ProductsPage() {
-  const [openFilter, setOpenFilter] = useState(false);
-
-  const handleOpenFilter = () => {
-    setOpenFilter(true);
-  };
-
-  const handleCloseFilter = () => {
-    setOpenFilter(false);
-  };
-
+  // Api returns an object containing
+  //  count: number
+  //  next: url
+  // previous: null || url
+  // results: People[]
+  const { data, fetchNextPage, hasNextPage, isLoading, isError, error,isFetching } = useInfiniteQuery(
+    'sw-people',
+    ({pageParam = initialUrl}) => fetchUrl(pageParam),
+    {
+      // getNextPageParam: (lastPage) => `initialPage?page={lastPage.page + 1}&limit={lastPage.limit}` // add a condition to reach end of the list
+      getNextPageParam: (lastPage) => lastPage.next || undefined
+    }
+  );
   return (
     <>
       <Helmet>
@@ -30,20 +39,14 @@ export default function ProductsPage() {
         <Typography variant="h4" sx={{ mb: 5 }}>
           Products
         </Typography>
-
-        <Stack direction="row" flexWrap="wrap-reverse" alignItems="center" justifyContent="flex-end" sx={{ mb: 5 }}>
-          <Stack direction="row" spacing={1} flexShrink={0} sx={{ my: 1 }}>
-            <ProductFilterSidebar
-              openFilter={openFilter}
-              onOpenFilter={handleOpenFilter}
-              onCloseFilter={handleCloseFilter}
-            />
-            <ProductSort />
-          </Stack>
-        </Stack>
-
-        <ProductList products={PRODUCTS} />
-        <ProductCartWidget />
+        <ProductList 
+          data={data} 
+          loadMore={fetchNextPage} 
+          hasMore={hasNextPage} 
+          isLoading={isFetching}
+          isError={isError}
+          error={error}
+        />
       </Container>
     </>
   );

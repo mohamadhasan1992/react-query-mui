@@ -40,8 +40,8 @@ export default function DashboardAppPage() {
 
           <Grid item xs={12} md={6} lg={4}>
             <AppOrderTimeline
-              title="Course overview"
-              list={[...Array(5)].map((_, index) => ({
+              title="Key Features"
+              list={[...Array(7)].map((_, index) => ({
                 id: faker.datatype.uuid(),
                 title: [
                   'Fetching data',
@@ -49,6 +49,8 @@ export default function DashboardAppPage() {
                   'Pagination',
                   'Prefetching',
                   'Mutation',
+                  'Infinite Scroll',
+                  'Setup, Centralization, Custom Hooks'
                 ][index],
                 type: `order${index + 1}`,
                 time: faker.date.past(),
@@ -58,7 +60,7 @@ export default function DashboardAppPage() {
 
           <Grid item xs={12} md={6} lg={8}>
             <AppTasks
-              title="Information"
+              title="Course overview"
               list={[
                 { id: '1', label: 'implementing React query' },
                 { id: '2', label: 'fetchs are all CSR' },

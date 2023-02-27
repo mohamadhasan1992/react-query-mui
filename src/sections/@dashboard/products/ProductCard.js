@@ -24,16 +24,16 @@ ShopProductCard.propTypes = {
   product: PropTypes.object,
 };
 
-export default function ShopProductCard({ product }) {
-  const { name, cover, price, colors, status, priceSale } = product;
+export default function ShopProductCard({ product, productId }) {
+  const { name, cover, mass, eye_color, gender, height } = product;
 
   return (
     <Card>
       <Box sx={{ pt: '100%', position: 'relative' }}>
-        {status && (
+        {gender && (
           <Label
             variant="filled"
-            color={(status === 'sale' && 'error') || 'info'}
+            color={(gender === 'male' && 'error') || 'info'}
             sx={{
               zIndex: 9,
               top: 16,
@@ -42,10 +42,10 @@ export default function ShopProductCard({ product }) {
               textTransform: 'uppercase',
             }}
           >
-            {status}
+            {gender}
           </Label>
         )}
-        <StyledProductImg alt={name} src={cover} />
+        <StyledProductImg alt={name} src={`/assets/images/products/product_${productId}.jpg`} />
       </Box>
 
       <Stack spacing={2} sx={{ p: 3 }}>
@@ -56,7 +56,7 @@ export default function ShopProductCard({ product }) {
         </Link>
 
         <Stack direction="row" alignItems="center" justifyContent="space-between">
-          <ColorPreview colors={colors} />
+          {/* <ColorPreview colors={eye_color} /> */}
           <Typography variant="subtitle1">
             <Typography
               component="span"
@@ -66,10 +66,10 @@ export default function ShopProductCard({ product }) {
                 textDecoration: 'line-through',
               }}
             >
-              {priceSale && fCurrency(priceSale)}
+              {height && fCurrency(height)}
             </Typography>
             &nbsp;
-            {fCurrency(price)}
+            {fCurrency(mass)}
           </Typography>
         </Stack>
       </Stack>
