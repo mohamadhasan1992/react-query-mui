@@ -3,19 +3,15 @@ import PropTypes from 'prop-types';
 import { Grid } from '@mui/material';
 import ShopProductCard from './ProductCard';
 import InfiniteScroll from 'react-infinite-scroller';
-import Spinner from 'src/components/loading/spinner';
 import Error from 'src/components/errror/error';
 
 // ----------------------------------------------------------------------
 
-ProductList.propTypes = {
-  products: PropTypes.array.isRequired,
-};
 
-export default function ProductList({ products, loadMore, hasMore, isLoading, isError, error }) {
+
+export default function ProductList({ products, loadMore, hasMore, isError, error }) {
   return (
     <>
-    {isLoading && <Spinner />}
     {isError && <Error detail={error} />}
     <InfiniteScroll loadMore={loadMore} hasMore={hasMore}>
       <Grid container spacing={3}>

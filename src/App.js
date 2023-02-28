@@ -1,6 +1,7 @@
 import { BrowserRouter } from 'react-router-dom';
 import { HelmetProvider } from 'react-helmet-async';
-import { QueryClient, QueryClientProvider } from 'react-query';
+import { QueryClientProvider } from 'react-query';
+import { queryClient } from './react-query/queryClient';
 import { ReactQueryDevtools } from 'react-query/devtools'
 
 // routes
@@ -10,11 +11,11 @@ import ThemeProvider from './theme';
 // components
 import { StyledChart } from './components/chart';
 import ScrollToTop from './components/scroll-to-top';
+import Loading from './components/loading/Loading';
 
 // ----------------------------------------------------------------------
 
 
-const queryClient = new QueryClient();
 export default function App() {
   return (
     <HelmetProvider>
@@ -23,7 +24,9 @@ export default function App() {
           <ScrollToTop />
           <StyledChart />
           <QueryClientProvider client={queryClient}>
+            <Loading />
             <Router />
+            <ReactQueryDevtools initialIsOpen={false} />
           </QueryClientProvider>
         </ThemeProvider>
       </BrowserRouter>

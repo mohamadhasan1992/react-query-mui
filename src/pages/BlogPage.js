@@ -6,6 +6,7 @@ import Iconify from '../components/iconify';
 import { BlogPostCard, BlogPostsSort, BlogPostsSearch } from '../sections/@dashboard/blog';
 // mock
 import POSTS from '../_mock/blog';
+import { useFetchData } from 'src/hooks/useFetchData';
 
 // ----------------------------------------------------------------------
 
@@ -18,6 +19,8 @@ const SORT_OPTIONS = [
 // ----------------------------------------------------------------------
 
 export default function BlogPage() {
+
+  const data = useFetchData('users');
   return (
     <>
       <Helmet>
@@ -25,14 +28,6 @@ export default function BlogPage() {
       </Helmet>
 
       <Container>
-        <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
-          <Typography variant="h4" gutterBottom>
-            Blog
-          </Typography>
-          <Button variant="contained" startIcon={<Iconify icon="eva:plus-fill" />}>
-            New Post
-          </Button>
-        </Stack>
 
         <Stack mb={5} direction="row" alignItems="center" justifyContent="space-between">
           <BlogPostsSearch posts={POSTS} />
@@ -40,7 +35,7 @@ export default function BlogPage() {
         </Stack>
 
         <Grid container spacing={3}>
-          {POSTS.map((post, index) => (
+          {data?.users?.map((post, index) => (
             <BlogPostCard key={post.id} post={post} index={index} />
           ))}
         </Grid>

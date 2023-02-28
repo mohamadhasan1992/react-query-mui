@@ -18,6 +18,8 @@ import ViewListIcon from '@mui/icons-material/ViewList';
 import DeleteForeverOutlinedIcon from '@mui/icons-material/DeleteForeverOutlined';
 import { ToggleButton } from '@mui/material';
 import Success from 'src/components/errror/Success';
+import { useFetchData } from 'src/hooks/useFetchData';
+import { useSearchParams } from 'react-router-dom';
 
 
 
@@ -52,53 +54,32 @@ const headCells = [
 export default function Blog() {
   const [open, setOpen] = React.useState(false);
   const [selected, setSelected] = React.useState(0);
-  const [page, setPage] = React.useState(1);
   const [dense, setDense] = React.useState(false);
-  const [rowsPerPage, setRowsPerPage] = React.useState(10);
 
   // DELETION USING USEMUTATION
   const deleteMutation = useMutation((postId) => deletePost(postId) )
 
-  // PREFETCHING
-  const queryClient = useQueryClient();
-  React.useEffect(() => {
-    const nextPage = page + 1;
-    queryClient.prefetchQuery(
-      ['posts', nextPage, rowsPerPage],
-      () => fetchPosts(nextPage, rowsPerPage), {
-        staleTime: 2000,
-        keepPreviouseData: true
-      }      
-      )
-  },[page, rowsPerPage, queryClient])
+  const data = useFetchData('posts')
   
-  /// FETCHING DATA
-  const {data, isError, error, isLoading} = useQuery(
-    ['posts', page, rowsPerPage], 
-    () => fetchPosts(page, rowsPerPage), {
-      staleTime: 2000
-    })
-  if(isLoading) return <Spinner />
-  if(isError) return <Error detail={error.toString()} />
 
- 
-
-  const handleClick = (event, id) => {
-    // fetch comments
-    setOpen(true)
-    setSelected(id);
-  };
+  
   const handleDelete = (event, id) => {
     deleteMutation.mutate(id)
   }
+  const [searchParams, setSearchParams] = useSearchParams();
 
   const handleChangePage = (event, newPage) => {
-    setPage(newPage + 1);
+    setSearchParams({
+      skip: parseInt(searchParams.get('skip')) + parseInt(searchParams.get('limit')),
+      limit: searchParams.get('limit')
+    });
   };
 
   const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
-    setPage(1);
+    setSearchParams({
+      skip: 0,
+      limit: parseInt(event.target.value, 10)
+    });
   };
 
  
@@ -107,7 +88,7 @@ export default function Blog() {
    
   return ( 
     <>
-      {open && <BlogDetail open={open} setOpen={setOpen} postId={selected} />}
+      {/* {open && <BlogDetail open={open} setOpen={setOpen} postId={selected} />} */}
       {deleteMutation.isError && <Error detail={'Error deleting the post'} />}
       {deleteMutation.isLoading && <Spinner />}
       {deleteMutation.isSuccess && <Success detail={'post successfully deleted!'} />}
@@ -133,7 +114,7 @@ export default function Blog() {
             </TableRow>
           </TableHead>
             <TableBody>
-              {data?.map(eachData => {
+              {data?.posts?.map(eachData => {
                   return (
                     <TableRow
                       hover
@@ -143,15 +124,15 @@ export default function Blog() {
                       key={eachData.id}
                       selected={isSelected(eachData.id)}
                     >
-                      {/* <TableCell
+                      <TableCell
                         component="th"
                         id={eachData.id}
                         scope="row"
                         padding="none"
                       >
                         {eachData.id}
-                      </TableCell> */}
-                      <TableCell padding="checkbox">
+                      </TableCell>
+                      {/* <TableCell padding="checkbox">
                         <ToggleButton 
                           value="list" 
                           aria-label="list"
@@ -159,7 +140,7 @@ export default function Blog() {
                           >
                           <ViewListIcon color='info' />
                         </ToggleButton>
-                      </TableCell>
+                      </TableCell> */}
                       <TableCell align="left">{eachData.title}</TableCell>
                       <TableCell align="left">{eachData.body}</TableCell>
                       <TableCell align="left">
@@ -182,8 +163,8 @@ export default function Blog() {
           rowsPerPageOptions={[5, 10, 25]}
           component="div"
           count={200}
-          rowsPerPage={rowsPerPage}
-          page={page - 1}
+          rowsPerPage={searchParams.get('limit')}
+          page={searchParams.get('skip')/searchParams.get('limit')}
           onPageChange={handleChangePage}
           onRowsPerPageChange={handleChangeRowsPerPage}
         />

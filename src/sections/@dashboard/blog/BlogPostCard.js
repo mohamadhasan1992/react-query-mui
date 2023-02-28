@@ -51,20 +51,17 @@ const StyledCover = styled('img')({
 
 // ----------------------------------------------------------------------
 
-BlogPostCard.propTypes = {
-  post: PropTypes.object.isRequired,
-  index: PropTypes.number,
-};
+
 
 export default function BlogPostCard({ post, index }) {
-  const { cover, title, view, comment, share, author, createdAt } = post;
+  const { image, maidenName, age } = post;
   const latestPostLarge = index === 0;
   const latestPost = index === 1 || index === 2;
 
   const POST_INFO = [
-    { number: comment, icon: 'eva:message-circle-fill' },
-    { number: view, icon: 'eva:eye-fill' },
-    { number: share, icon: 'eva:share-fill' },
+    // { number: comment, icon: 'eva:message-circle-fill' },
+    { number: age, icon: 'eva:eye-fill' },
+    // { number: share, icon: 'eva:share-fill' },
   ];
 
   return (
@@ -104,7 +101,7 @@ export default function BlogPostCard({ post, index }) {
               ...((latestPostLarge || latestPost) && { display: 'none' }),
             }}
           />
-          <StyledAvatar
+          {/* <StyledAvatar
             alt={author.name}
             src={author.avatarUrl}
             sx={{
@@ -116,9 +113,9 @@ export default function BlogPostCard({ post, index }) {
                 height: 40,
               }),
             }}
-          />
+          /> */}
 
-          <StyledCover alt={title} src={cover} />
+          <StyledCover alt={maidenName} src={image} />
         </StyledCardMedia>
 
         <CardContent
@@ -131,9 +128,9 @@ export default function BlogPostCard({ post, index }) {
             }),
           }}
         >
-          <Typography gutterBottom variant="caption" sx={{ color: 'text.disabled', display: 'block' }}>
+          {/* <Typography gutterBottom variant="caption" sx={{ color: 'text.disabled', display: 'block' }}>
             {fDate(createdAt)}
-          </Typography>
+          </Typography> */}
 
           <StyledTitle
             color="inherit"
@@ -146,7 +143,7 @@ export default function BlogPostCard({ post, index }) {
               }),
             }}
           >
-            {title}
+            {maidenName}
           </StyledTitle>
 
           <StyledInfo>

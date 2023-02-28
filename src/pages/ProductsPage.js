@@ -53,7 +53,6 @@ export default function ProductsPage() {
           products={data} 
           loadMore={fetchNextPage} 
           hasMore={hasNextPage} 
-          isLoading={isFetching}
           isError={isError}
           error={error}
         />
