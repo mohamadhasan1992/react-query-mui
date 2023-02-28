@@ -70,7 +70,7 @@ export default function Blog() {
 
   const handleChangePage = (event, newPage) => {
     setSearchParams({
-      skip: parseInt(searchParams.get('skip')) + parseInt(searchParams.get('limit')),
+      skip: newPage * parseInt(searchParams.get('limit')),
       limit: searchParams.get('limit')
     });
   };

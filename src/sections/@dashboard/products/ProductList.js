@@ -9,10 +9,9 @@ import Error from 'src/components/errror/error';
 
 
 
-export default function ProductList({ products, loadMore, hasMore, isError, error }) {
+export default function ProductList({ products, loadMore, hasMore }) {
   return (
     <>
-    {isError && <Error detail={error} />}
     <InfiniteScroll loadMore={loadMore} hasMore={hasMore}>
       <Grid container spacing={3}>
         {products?.pages.map(eachPageData => {
